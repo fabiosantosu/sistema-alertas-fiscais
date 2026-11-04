@@ -1,8 +1,33 @@
 from flask import Flask, render_template, request, redirect, url_for
 from datetime import datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
+import os
+from dotenv import load_dotenv
+
+# Carregar variáveis de ambiente do ficheiro .env
+load_dotenv()
 
 app = Flask(__name__)
 
+# Configuração da ligação ao banco de dados PostgreSQL
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Inicializar a extensão SQLAlchemy
+db = SQLAlchemy(app)
+
+# --- MODELO DO BANCO DE DADOS (Tabela) ---
+class CalculoFiscal(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    valor = db.Column(db.Float, nullable=False)
+    data_fatura = db.Column(db.Date, nullable=False)
+    data_vencimento = db.Column(db.Date, nullable=False)
+
+# Cria as tabelas automaticamente se não existirem
+with app.app_context():
+    db.create_all()
+
+# --- ROTAS ---
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -16,14 +41,22 @@ def dashboard():
 @app.route('/calcular', methods=['POST'])
 def calcular():
     data_nota_str = request.form.get('data_nota')
-    valor = request.form.get('valor')
+    valor_str = request.form.get('valor')
     
     data_nota = datetime.strptime(data_nota_str, '%Y-%m-%d')
     data_vencimento = data_nota + timedelta(days=30)
     data_formatada = data_vencimento.strftime('%d/%m/%Y')
     
-    # Aqui está a refatoração: enviamos as variáveis para o novo template
-    return render_template('resultado.html', valor=valor, data=data_formatada)
+    # Salvar o novo cálculo no banco de dados
+    novo_calculo = CalculoFiscal(
+        valor=float(valor_str),
+        data_fatura=data_nota,
+        data_vencimento=data_vencimento
+    )
+    db.session.add(novo_calculo)
+    db.session.commit()
+    
+    return render_template('resultado.html', valor=valor_str, data=data_formatada)
 
 if __name__ == '__main__':
     app.run(debug=True)
