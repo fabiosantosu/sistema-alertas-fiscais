@@ -36,7 +36,9 @@ def login():
 
 @app.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    # Busca os últimos 5 cálculos registrados, ordenados do mais recente para o mais antigo
+    ultimos_calculos = CalculoFiscal.query.order_by(CalculoFiscal.id.desc()).limit(5).all()
+    return render_template('dashboard.html', calculos=ultimos_calculos)
 
 @app.route('/calcular', methods=['POST'])
 def calcular():

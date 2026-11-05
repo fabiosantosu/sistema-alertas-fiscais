@@ -19,6 +19,30 @@
             </div>
             <button type="submit" class="btn btn-success">Calcular Vencimento (30 dias)</button>
         </form>
+        <hr style="margin-top: 30px; border-color: #333;">
+<h3 style="color: #fff; margin-bottom: 15px;">Histórico Recente</h3>
+<table style="width: 100%; color: #ccc; text-align: left; border-collapse: collapse;">
+    <thead>
+        <tr style="border-bottom: 1px solid #555;">
+            <th style="padding: 10px;">Data da Fatura</th>
+            <th style="padding: 10px;">Valor</th>
+            <th style="padding: 10px;">Vencimento (30 dias)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for calc in calculos %}
+        <tr style="border-bottom: 1px solid #444;">
+            <td style="padding: 10px;">{{ calc.data_fatura.strftime('%d/%m/%Y') }}</td>
+            <td style="padding: 10px;">R$ {{ "{:,.2f}".format(calc.valor).replace(',', 'X').replace('.', ',').replace('X', '.') }}</td>
+            <td style="padding: 10px; color: #d9534f;">{{ calc.data_vencimento.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3" style="padding: 10px; text-align: center;">Nenhum cálculo recente.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
     </div>
 </body>
 </html>

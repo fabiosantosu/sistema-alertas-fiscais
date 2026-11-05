@@ -8,7 +8,7 @@
 <body class="bg-light p-4 d-flex justify-content-center">
     <div class="card shadow p-4 text-center" style="width: 100%; max-width: 400px;">
         <h3 class="text-success mb-4">Cálculo Concluído</h3>
-        <p class="fs-5">Valor Registado: <b>R$ {{ valor }}</b></p>
+        <p class="fs-5">Valor Registado: <b>R$ {{ "{:,.2f}".format(valor|float).replace(',', 'X').replace('.', ',').replace('X', '.') }}</b></p>
         <p class="fs-5">Data Limite: <b class="text-danger">{{ data }}</b></p>
         <a href="/dashboard" class="btn btn-outline-primary mt-4">Calcular Novo Prazo</a>
     </div>
