@@ -1,4 +1,6 @@
 import pytest
+import os
+os.environ['DATABASE_URL'] = 'sqlite:///testes.db'
 from app import app, db, CalculoFiscal
 
 @pytest.fixture
