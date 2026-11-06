@@ -18,4 +18,8 @@ jobs:
         pip install pytest coverage
     - name: Executar testes
       run: |
+<<<<<<< HEAD
         pytest
+=======
+        pytest
+>>>>>>> fea1ab33bbea10367342a7baef25715348a5c3c7
